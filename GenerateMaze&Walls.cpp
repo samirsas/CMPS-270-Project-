@@ -173,4 +173,61 @@ class Maze
 
         return {};
     }
+// Manhattan distance A*
+    int heuristic(int x1, int y1, int x2, int y2) const
+    {
+        return abs(x1 - x2) + abs(y1 - y2);
+    }
+
+vector<pair<int, int>> reconstructPath(map<pair<int, int>, pair<int, int>> &cameFrom, pair<int, int> current) const
+    {
+        vector<pair<int, int>> path;
+        path.push_back(current);
+        while (cameFrom.find(current) != cameFrom.end())
+        {
+            current = cameFrom[current];
+            path.push_back(current);
+        }
+        reverse(path.begin(), path.end());
+        return path;
+    }
+
+    void markPath(const vector<pair<int, int>> &path)
+    {
+        if (path.empty())
+            return;
+
+        if (path.size() > 1 && grid[path[1].first][path[1].second] == '#')
+        {
+            cout << "\n No valid path found." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        for (size_t i = 0; i < path.size(); i++)
+        {
+            const auto &cell = path[i];
+            grid[cell.first][cell.second] = '*';
+        }
+    }
+};
+int main()
+{
+    Maze maze(10, 11);
+    maze.generateMaze();
+    cout << "Initial Maze:" << endl;
+    maze.printMaze();
+
+    vector<pair<int, int>> path = maze.aStarSearch(maze.saveiS - 1, 0, maze.saveiF - 1, 10); // Start and finish positions
+    if (path.empty())
+    {
+        cout << "\nNo path found." << endl;
+    }
+    else
+    {
+        maze.markPath(path);
+        cout << "\nMaze with Path:" << endl;
+        maze.printMaze();
+    }
+
+    return 0;
 }
