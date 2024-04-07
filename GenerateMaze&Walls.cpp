@@ -82,4 +82,52 @@ class Maze
                 addWalls(wall.first, wall.second, walls);
             }
         }
-    }}
+    }
+    void printMaze()
+    {
+        int c = cols + 2;
+        int r = rows + 2;
+        char **array = new char *[r];
+        for (int i = 0; i < r; ++i)
+        {
+            array[i] = new char[c];
+        }
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                if (i == 0 || j == 0 || j == c - 1 || i == r - 1)
+                    array[i][j] = '#';
+                else
+                    array[i][j] = grid[i - 1][j - 1];
+            }
+        }
+        bool flag1 = true;
+        bool flag2 = true;
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                if (j == 0 && (array[i][1] == '.' || array[i][1] == '*') && flag1)
+                {
+                    array[i][0] = 'S';
+                    saveiS = i;
+                    flag1 = false;
+                }
+                else if (j == c - 2 && (array[r - 1 - i][j] == '.' || array[r - 1 - i][j] == '*') && flag2)
+                {
+                    array[r - 1 - i][j + 1] = 'F';
+                    saveiF = r - 1 - i;
+                    flag2 = false;
+                }
+                cout << array[i][j] << " ";
+            }
+            cout << "\n";
+        }
+        for (int i = 0; i < r; ++i)
+        {
+            delete[] array[i];
+        }
+        delete[] array;
+    }
+}
