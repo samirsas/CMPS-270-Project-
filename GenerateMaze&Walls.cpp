@@ -130,4 +130,47 @@ class Maze
         }
         delete[] array;
     }
+
+// A* search algorithm for pathfinding.
+    vector<pair<int, int>> aStarSearch(int startX, int startY, int goalX, int goalY)
+    {
+        set<pair<int, pair<int, int>>> openSet;
+        map<pair<int, int>, pair<int, int>> cameFrom;
+        map<pair<int, int>, int> gScore, fScore;
+
+        auto startNode = make_pair(startX, startY), goalNode = make_pair(goalX, goalY);
+        gScore[startNode] = 0;
+        fScore[startNode] = heuristic(startX, startY, goalX, goalY);
+        openSet.insert({fScore[startNode], startNode});
+
+        while (!openSet.empty())
+        {
+            auto current = openSet.begin()->second;
+            if (current == goalNode)
+            {
+                vector<pair<int, int>> path = reconstructPath(cameFrom, current);
+                path.insert(path.begin(), startNode); // Ensure the start node is included in the path.
+                return path;
+            }
+
+            openSet.erase(openSet.begin());
+            for (auto &dir : directions)
+            {
+                auto neighbor = make_pair(current.first + dir.first, current.second + dir.second);
+                if (isValid(neighbor.first, neighbor.second))
+                {
+                    int tentative_gScore = gScore[current] + 1;
+                    if (!gScore.count(neighbor) || tentative_gScore < gScore[neighbor])
+                    {
+                        cameFrom[neighbor] = current;
+                        gScore[neighbor] = tentative_gScore;
+                        fScore[neighbor] = tentative_gScore + heuristic(neighbor.first, neighbor.second, goalX, goalY);
+                        openSet.insert({fScore[neighbor], neighbor});
+                    }
+                }
+            }
+        }
+
+        return {};
+    }
 }
