@@ -210,6 +210,7 @@ vector<pair<int, int>> reconstructPath(map<pair<int, int>, pair<int, int>> &came
         }
     }
 };
+//main function to run
 int main()
 {
     Maze maze(10, 11);
